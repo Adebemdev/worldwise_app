@@ -19,10 +19,17 @@ function City() {
 
   useEffect(
     function () {
-      getCity(id);
+      let ignore = true;
+      if (ignore) {
+        getCity(id);
+      }
+      return () => {
+        ignore = false;
+      };
     },
-    [id]
+    [id, getCity]
   );
+  console.log(id, getCity(id));
 
   const { cityName, emoji, date, notes } = currentCity;
 
