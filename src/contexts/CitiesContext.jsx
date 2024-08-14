@@ -1,4 +1,10 @@
-import { createContext, useContext, useEffect, useReducer } from 'react';
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useReducer,
+} from 'react';
 
 const BASE_URL = 'http://localhost:900';
 
@@ -85,22 +91,24 @@ function CitiesProvider({ children }) {
   }, []);
 
   // A function to fetch the current city based on ID.
-  async function getCity(id) {
-    console.log(id, currentCity.id);
-    if (Number(id) === currentCity.id) return;
-
-    dispatch({ type: 'loading' });
-    try {
-      const res = await fetch(`${BASE_URL}/cities/${id}`);
-      const data = await res.json();
-      dispatch({ type: 'city/loaded', payload: data });
-    } catch {
-      dispatch({
-        type: 'rejected',
-        payload: 'There was  an error in getting the city ...',
-      });
-    }
-  }
+  const getCity = useCallback(
+    async function getCity(id) {
+      console.log(id, currentCity.id);
+      if (Number(id) === currentCity.id) return;
+      dispatch({ type: 'loading' });
+      try {
+        const res = await fetch(`${BASE_URL}/cities/${id}`);
+        const data = await res.json();
+        dispatch({ type: 'city/loaded', payload: data });
+      } catch {
+        dispatch({
+          type: 'rejected',
+          payload: 'There was  an error in getting the city ...',
+        });
+      }
+    },
+    [currentCity.id]
+  );
 
   // Function that fetch or add a new city object when the form is submitted.
   async function createCity(newCity) {
@@ -115,7 +123,8 @@ function CitiesProvider({ children }) {
         },
       });
       const data = await res.json();
-      dispatch({ type: 'city/loaded', payload: data });
+      dispatch({ type: 'city/created', payload: data });
+      console.log(`${data}, is the first city`);
     } catch {
       dispatch({
         type: 'rejected',
@@ -145,8 +154,8 @@ function CitiesProvider({ children }) {
         cities,
         isLoading,
         currentCity,
-        error,
         getCity,
+        error,
         createCity,
         deleteCity,
       }}
@@ -163,4 +172,5 @@ function useCities() {
   return context;
 }
 
+// Export by name.
 export { CitiesProvider, useCities };

@@ -82,6 +82,7 @@ function Form() {
     };
 
     await createCity(newCity);
+    console.log(`${newCity} second render of city ?`);
     navigate('/appLayout/cities');
   }
 

@@ -15,21 +15,30 @@ const formatDate = (date) =>
 
 function City() {
   const { id } = useParams();
-  const { getCity, currentCity, isLoading } = useCities();
+  const { currentCity, isLoading, getCity } = useCities();
 
   useEffect(
     function () {
-      let ignore = true;
-      if (ignore) {
-        getCity(id);
-      }
-      return () => {
-        ignore = false;
-      };
+      // async function getCity(id) {
+      //   console.log(id, currentCity.id);
+      //   if (Number(id) === currentCity.id) return;
+
+      //   dispatch({ type: 'loading' });
+      //   try {
+      //     const res = await fetch(`${BASE_URL}/cities/${id}`);
+      //     const data = await res.json();
+      //     dispatch({ type: 'city/loaded', payload: data });
+      //   } catch {
+      //     dispatch({
+      //       type: 'rejected',
+      //       payload: 'There was  an error in getting the city ...',
+      //     });
+      //   }
+      // }
+      getCity(id);
     },
     [id, getCity]
   );
-  console.log(id, getCity(id));
 
   const { cityName, emoji, date, notes } = currentCity;
 
